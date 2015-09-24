@@ -3,8 +3,9 @@ project(antichat_server)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -Ofast -std=c++11 -pthread -lboost_system")
 
-set(SOURCE_FILES main.cpp c_server.cpp c_server.hpp)
+set(SOURCE_FILES main.cpp)
 add_executable(antichat_server ${SOURCE_FILES}
+        c_server.cpp c_server.hpp
         c_network_api.cpp c_network_api.hpp
         c_user.cpp c_user.hpp
         c_room.cpp c_room.hpp

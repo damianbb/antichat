@@ -21,6 +21,8 @@ public:
 
 		list<c_user> &get_users ();
 
+		const string &get_room_name () const { return room_name; }
+
 		bool if_user_exists (const c_user &) const;
 };
 

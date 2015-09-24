@@ -10,11 +10,11 @@
 #include <thread>
 #include <atomic>
 #include <cstdint>
-#include "c_user.hpp"
 
 using boost::asio::ip::udp;
 
 typedef std::map<uint32_t, udp::endpoint> ClientList;
+typedef ClientList::value_type Client;
 
 struct ClientMessage {
 		std::string msg;

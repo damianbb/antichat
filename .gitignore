@@ -1,2 +1,6 @@
 *~
-*.idea/
+*/.idea/
+*.pro
+*.user
+*.orig
+*/build/

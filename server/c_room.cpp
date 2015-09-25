@@ -22,3 +22,12 @@ list<c_user> &c_room::get_users () {
 }
 
 c_room::c_room (const string &room_name) : room_name(room_name) { }
+
+c_user &c_room::get_user_by_endpoint (const boost::asio::ip::udp::endpoint &remote_endpoint) {
+	for (c_user &user : users) {
+		if (user.remote_endpoint == remote_endpoint)
+			return user;
+	}
+
+	throw std::runtime_error("no such user");
+}

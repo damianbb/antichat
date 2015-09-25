@@ -3,8 +3,7 @@
 
 c_network_api::c_network_api (unsigned short local_port)
 	: socket(io_service, udp::endpoint(udp::v6(), local_port)),
-		service_thread(&c_network_api::run_service, this),
-		nextClientID(0L) {
+		service_thread(&c_network_api::run_service, this), handle_remote_error ( {} ) {
 
 	Log::Info("Starting server on port ", local_port);
 };
@@ -24,45 +23,22 @@ void c_network_api::start_receive () {
 
 }
 
-void c_network_api::on_client_disconnected (int32_t id) {
-	for (auto &handler : clientDisconnectedHandlers)
-		if (handler)
-			handler(id);
-}
-
-void c_network_api::handle_remote_error (const boost::system::error_code& error_code, const udp::endpoint remote_endpoint) {
-	bool found = false;
-	int32_t id;
-	for (const auto &client : clients)
-		if (client.second == remote_endpoint) {
-			found = true;
-			id = client.first;
-			break;
-		}
-	if (!found)
-		return;
-
-	clients.erase(id);
-	on_client_disconnected(id);
-}
-
 void c_network_api::handle_receive (const boost::system::error_code &error, std::size_t bytes_transferred) {
 	if (!error && bytes_transferred < 4096) {
 		try {
-			ClientMessage message;
+			client_message message;
 			message.msg = std::string(recv_buffer.data(), recv_buffer.data() + bytes_transferred);
 			message.remote_endpoint = remote_endpoint;
-			message.client_id = get_or_create_client_id(remote_endpoint);
 
 			if (!message.msg.empty())
-				incomingMessages.push(message);
+				incoming_messages.push(message);
 
 			statistics.register_received_message(bytes_transferred);
 
 			Log::Info("recieved msg from ", remote_endpoint.address());
 			Log::Info("     message: ", message.msg);
 			Log::Info("     length of msg: ", bytes_transferred);
-		} catch (std::exception ex) {
+		} catch (const std::exception &ex) {
 			Log::Error("handle_receive: Error parsing incoming message:", ex.what());
 		} catch (...) {
 			Log::Error("handle_receive: Unknown error while parsing incoming message");
@@ -76,7 +52,7 @@ void c_network_api::handle_receive (const boost::system::error_code &error, std:
 	start_receive();
 }
 
-void c_network_api::send (const std::string &message, udp::endpoint target_endpoint) {
+void c_network_api::send (const std::string &message, const udp::endpoint &target_endpoint) {
 	socket.send_to(boost::asio::buffer(message), target_endpoint);
 	statistics.register_sent_message(message.size());
 }
@@ -93,41 +69,12 @@ void c_network_api::run_service () {
 		}
 	}
 	Log::Debug("Server network thread stopped");
-};
-
-int32_t c_network_api::get_or_create_client_id (udp::endpoint endpoint) {
-	for (const auto &client : clients)
-		if (client.second == endpoint)
-			return client.first;
-
-	auto id = ++nextClientID;
-	clients.insert(Client(id, endpoint));
-	return id;
-};
-
-void c_network_api::SendToClient (const std::string &message, uint32_t clientID) {
-	try {
-		send(message, clients.at(clientID));
-	} catch (std::out_of_range) {
-		Log::Error(__FUNCTION__, ": Unknown client ID ", clientID);
-	}
-};
-
-void c_network_api::SendToAllExcept (const std::string &message, uint32_t clientID) {
-	for (auto client : clients)
-		if (client.first != clientID)
-			send(message, client.second);
-};
-
-void c_network_api::SendToAll (const std::string &message) {
-	for (auto client : clients)
-		send(message, client.second);
-};
-
-ClientMessage c_network_api::PopMessage () {
-	return incomingMessages.pop();
 }
 
-bool c_network_api::HasMessages () {
-	return !incomingMessages.empty();
-};
+client_message c_network_api::pop_message () {
+	return incoming_messages.pop();
+}
+
+bool c_network_api::has_messages () {
+	return !incoming_messages.empty();
+}

@@ -10,6 +10,8 @@ public:
 		string nickname;
 		boost::asio::ip::udp::endpoint remote_endpoint;
 		uint32_t current_client_id;
+
+		c_user (const string & = "unknown");
 };
 
 bool operator== (const c_user &lhs, const c_user &rhs);

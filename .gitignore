@@ -4,3 +4,8 @@
 *.user
 *.orig
 */build/
+*/CMakeCache.txt
+*/CMakeFiles/
+*/Makefile
+*/antichat_server
+*/*.cmake

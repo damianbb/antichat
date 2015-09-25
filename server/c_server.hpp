@@ -22,6 +22,7 @@ private:
 		static string answer;
 		thread sending_thread;
 		thread recieving_thread;
+		static mutex mtx;
 
 		static void handle_recieve ();
 
@@ -33,9 +34,11 @@ private:
 
 		static void join_room (const string &, const c_user &);
 
-		static void send_msg (const ClientMessage &);
+		static void set_nickname (const string &, const c_user &);
 
-		static void execute_command (const ClientMessage &);
+		static void send_msg (const client_message &);
+
+		static void execute_command (const client_message &);
 
 		static vector<string> parse_msg (const string &);
 

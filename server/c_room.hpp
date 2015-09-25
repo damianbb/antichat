@@ -3,6 +3,7 @@
 #include "c_user.hpp"
 #include <list>
 #include <string>
+#include <boost/asio.hpp>
 
 using std::list;
 using std::string;
@@ -20,6 +21,8 @@ public:
 		void remove_user (const c_user &);
 
 		list<c_user> &get_users ();
+
+		c_user &get_user_by_endpoint (const boost::asio::ip::udp::endpoint &remote_endpoint);
 
 		const string &get_room_name () const { return room_name; }
 

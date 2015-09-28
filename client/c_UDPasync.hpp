@@ -1,11 +1,11 @@
 #ifndef C_UDPASYNC_HPP
 #define C_UDPASYNC_HPP
 
-#include "c_statistics.hpp"
-#include "c_locked_queue.hpp"
+#include "../external/c_statistics.hpp"
+#include "../external/c_locked_queue.hpp"
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include "log.hpp"
+#include "../external/log.hpp"
 #include <array>
 #include <thread>
 
@@ -15,7 +15,7 @@ using boost::asio::ip::udp;
 
 class c_UDPasync {
 public:
-		c_UDPasync (std::string host, unsigned short server_port, unsigned short local_port = 0);
+		c_UDPasync (const std::string &host, unsigned short server_port, unsigned short local_port = 0);
 
 		~c_UDPasync ();
 

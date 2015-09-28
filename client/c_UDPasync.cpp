@@ -1,6 +1,6 @@
 #include "c_UDPasync.hpp"
 
-c_UDPasync::c_UDPasync(std::string host, unsigned short server_port, unsigned short local_port) :
+c_UDPasync::c_UDPasync(const std::string &host, unsigned short server_port, unsigned short local_port) :
 	socket(io_service, udp::endpoint(udp::v6(), local_port)),
 	service_thread(&c_UDPasync::run_service, this) {
 	udp::resolver resolver(io_service);
@@ -50,4 +50,5 @@ void c_UDPasync::run_service() {
 			Log::Error("Unknown exception in client network thread");
 		}
 	}
+
 }

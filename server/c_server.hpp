@@ -21,10 +21,10 @@ private:
 		static c_network_api network_api;
 		static string answer;
 		thread sending_thread;
-		thread recieving_thread;
+		thread receiving_thread;
 		static mutex mtx;
 
-		static void handle_recieve ();
+		static void handle_receive ();
 
 		static void start_recieving ();
 
@@ -34,7 +34,7 @@ private:
 
 		static void join_room (const string &, const c_user &);
 
-		static void set_nickname (const string &, const c_user &);
+		static void set_nickname (const string &, c_user &);
 
 		static void send_msg (const client_message &);
 

@@ -10,23 +10,25 @@ using std::string;
 
 class c_room {
 private:
-		list<c_user> users;
-		string room_name;
+    list<c_user> users;
+    string room_name;
 
 public:
-		c_room (const string &);
+    c_room (const string &);
 
-		void add_user (const c_user &);
+    void add_user (const c_user &);
 
-		void remove_user (const c_user &);
+    void remove_user (const c_user &);
 
-		list<c_user> &get_users ();
+    list<c_user> &get_users ();
 
-		c_user &get_user_by_endpoint (const boost::asio::ip::udp::endpoint &remote_endpoint);
+    c_user &get_user_by_endpoint (const boost::asio::ip::udp::endpoint &remote_endpoint);
 
-		const string &get_room_name () const { return room_name; }
+    c_user &get_user_by_nickname (const string &);
 
-		bool if_user_exists (const c_user &) const;
+    const string &get_room_name () const { return room_name; }
+
+    bool if_user_exists (const c_user &) const;
 };
 
 
